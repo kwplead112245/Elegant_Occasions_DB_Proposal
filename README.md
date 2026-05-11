@@ -1,4 +1,5 @@
-# Elegant_Occasions_DB_Proposal_READ_ME
+# Elegant Occasions DB Proposal
+<div align=center><p><i>This project was developed for educational purposes as part of the DBA 120 curriculum at AB Tech and is intended for demonstration only.</div></i></p><br><br>
 
 <div align="center">
   <img src="https://img.shields.io/badge/Database-MySQL%208.4-blue?style=for-the-badge&logo=mysql" alt="MySQL Badge">
