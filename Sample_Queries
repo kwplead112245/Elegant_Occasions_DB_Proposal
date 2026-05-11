@@ -1,0 +1,49 @@
+## Sample Queries 
+
+
+## Everything Sophie is working on 
+
+
+SELECT
+    CONCAT(cl.first_name, ' ', cl.last_name)    AS client, a.appointment_date, a.location, s.name AS service, ast.name AS appointment_status
+
+FROM appointment a
+JOIN appointment_employee ape ON a.appointment_id = ape.appointment_id
+JOIN employee e ON ape.employee_id = e.employee_id
+JOIN client cl ON a.client_id = cl.client_id
+JOIN appointment_status ast ON a.appointment_status_id = ast.appointment_status_id
+JOIN appointment_service aps ON a.appointment_id = aps.appointment_id
+JOIN service s ON aps.service_id = s.service_id
+WHERE e.first_name = 'Sophie' AND e.last_name = 'Lang'
+ORDER BY a.appointment_date;
+
+
+## All vendors for the Chavez / Gomez Wedding 
+
+SELECT
+    v.name AS vendor_name, vt.name AS vendor_type, s.name AS service, cs.name AS contract_status, c.signed_date
+FROM contract c
+JOIN vendor v  ON c.vendor_id  = v.vendor_id
+JOIN vendor_type vt ON v.vendor_type_id  = vt.vendor_type_id
+JOIN contract_status cs  ON c.contract_status_id = cs.contract_status_id
+JOIN contract_service csvc ON c.contract_id  = csvc.contract_id
+JOIN service s  ON csvc.service_id  = s.service_id
+JOIN wedding w  ON c.wedding_id   = w.wedding_id
+JOIN client_wedding cw  ON w.wedding_id = cw.wedding_id
+JOIN client cl ON cw.client_id = cl.client_id
+WHERE cl.last_name IN ('Chavez', 'Gomez')
+GROUP BY v.vendor_id, v.name, vt.name, s.name, cs.name, c.signed_date
+ORDER BY v.name;
+
+
+## All appointments for Anna Klein
+
+SELECT
+    a.appointment_id, a.appointment_date, a.location,s.name AS service, ast.name AS status
+FROM appointment a
+JOIN client c ON a.client_id  = c.client_id
+JOIN appointment_status ast  ON a.appointment_status_id = ast.appointment_status_id
+JOIN appointment_service aps ON a.appointment_id = aps.appointment_id
+JOIN service s  ON aps.service_id  = s.service_id
+WHERE c.first_name = 'Anna' AND c.last_name = 'Klein'
+ORDER BY a.appointment_date;
