@@ -1,0 +1,131 @@
+## TEST DATA 
+
+
+
+INSERT INTO client_type (name) VALUES
+    ('Bride'), ('Groom'), ('Coordinator');
+
+INSERT INTO vendor_type (name) VALUES
+    ('Venue'), ('Caterer'), ('Photographer'), ('Florist'), ('Entertainment'), ('Transportation');
+
+INSERT INTO contract_status (name) VALUES
+    ('Pending'), ('Signed'), ('Cancelled');
+
+INSERT INTO appointment_status (name) VALUES
+    ('Scheduled'),('Completed'), ('Cancelled');
+
+
+
+## Clients
+
+
+INSERT INTO client (first_name, last_name, email, phone, client_type_id) VALUES
+    ('Anna', 'Klein',  'anna.klein@email.com',  '8285550101', 1),  ('James',  'Klein', 'james.klein@email.com',   '8285550102', 2),  ('Maria', 'Chavez', 'maria.chavez@email.com', '8285550103', 1),  ('Carlos', 'Gomez',    'carlos.gomez@email.com',  '8285550104', 2),   ('Emma', 'Harrison', 'emma.harrison@email.com', '8285550105', 3);  
+
+
+## Vendors
+
+
+INSERT INTO vendor (name, email, phone, address, vendor_type_id) VALUES
+    ('The Grand Pavilion',       'info@grandpavilion.com',      '8285550201', '100 Venue Ln, Asheville NC',  1),
+    ('Blue Ridge Catering',      'info@blueridgecatering.com',  '8285550202', '200 Food Ave, Asheville NC',  2),
+    ('Corbin Gurkin Photography', 'corbin@corbingurkin.com',    '8285550203', '300 Lens St, Asheville NC',   3),
+    ('Petal & Bloom Florals',    'info@petalbloom.com',         '8285550204', '400 Flower Rd, Asheville NC', 4),
+    ('Mountain Sound DJ',        'info@mountainsound.com',      '8285550205', '500 Music Way, Asheville NC', 5);
+
+## Venues
+
+
+INSERT INTO venue (vendor_id, capacity, indoor_outdoor) VALUES
+    (1, 250, 'Both');
+
+
+## Services
+
+
+INSERT INTO service (name, description) VALUES
+    ('Full Wedding Coordination', 'End to end wedding planning and day of coordination'), ('Month-of Coordination', 'Final preparation and day of execution'), ('Venue Selection', 'Research and booking of ceremony and reception venue'), ('Catering', 'Food and beverage service'), ('Photography', 'Wedding day photography coverage'),
+    ('Floral Design', 'Ceremony and reception floral arrangements'), ('Entertainment', 'DJ or live music coordination');
+
+## Employees
+
+
+INSERT INTO employee (first_name, last_name, email, phone, role) VALUES
+    ('Sophie', 'Lang',     'sophie@elegantoccasions.com', '8285550301', 'Senior Planner'),
+    ('Ava',    'Reynolds', 'ava@elegantoccasions.com',    '8285550302', 'Operations Manager'),
+    ('Claire', 'Bishop',   'claire@elegantoccasions.com', '8285550303', 'Admin Assistant'),
+    ('Grant',  'Dwyer',    'grant@elegantoccasions.com',  '8285550304', 'IT Specialist');
+
+
+## Vendor Services
+
+
+INSERT INTO vendor_service (vendor_id, service_id) VALUES
+    (1, 3),  (2, 4), (3, 5), (4, 6), (5, 7);  
+
+
+## Employee Services
+
+
+INSERT INTO employee_service (employee_id, service_id) VALUES
+    (1, 1), (1, 2), (1, 3), (2, 1), (2, 2);  
+
+
+## Weddings
+
+
+INSERT INTO wedding (wedding_date, guest_count, theme, service_tier, venue_id) VALUES
+    ('2025-09-20', 175, 'Garden Romantic', 'Full-Service', 1), ('2025-11-08', 80,  'Modern Minimalist', 'Month-of', 1);  
+
+## Client Wedding
+
+INSERT INTO client_wedding (wedding_id, client_id, client_type_id) VALUES
+    (1, 1, 1), (1, 2, 2), (2, 3, 1), (2, 4, 2);  
+
+
+## Wedding Services
+
+
+
+INSERT INTO wedding_service (wedding_id, service_id, service_status, added_date) VALUES
+    (1, 1, 'Confirmed',  '2024-11-01'), (1, 4, 'Confirmed',  '2024-11-15'), (1, 5, 'Exploring',  '2024-12-01'),  
+    (1, 6, 'Exploring',  '2025-01-10'), (2, 2, 'Confirmed',  '2025-01-05'), (2, 5, 'Confirmed',  '2025-01-05');  
+
+
+
+## Appointments
+
+
+INSERT INTO appointment (client_id, appointment_date, location, appointment_status_id, notes) VALUES
+    (1, '2025-02-10 10:00:00', 'Elegant Occasions Office', 2, 'Initial consultation completed. Client confirmed full-service package.'), (1, '2025-03-05 14:00:00', 'The Grand Pavilion', 2, 'Venue walkthrough completed. Client approved venue.'), (1, '2025-04-15 11:00:00', 'Blue Ridge Catering',  2, 'Tasting completed. Client selected Menu B.'), (1, '2025-06-20 10:00:00', 'Elegant Occasions Office', 1, 'Photography review meeting.'), (3, '2025-02-01 09:00:00', 'Elegant Occasions Office', 2, 'Month-of onboarding. Existing vendor contracts reviewed.'), (3, '2025-10-25 10:00:00', 'The Grand Pavilion', 1, 'Final walkthrough scheduled.');
+
+
+## appointment employees
+
+INSERT INTO appointment_employee (appointment_id, employee_id) VALUES
+    (1, 1), (2, 1), (2, 2), (3, 1), (4, 1), (5, 1), (6, 1);  
+
+
+## Appointment Services
+
+
+INSERT INTO appointment_service (appointment_id, service_id) VALUES
+    (1, 1), (2, 3), (3, 4), (4, 5), (5, 2), (6, 2);  
+
+
+## CONTRACTS 
+
+
+INSERT INTO contract (wedding_id, vendor_id, contract_status_id, signed_date, document_ref) VALUES
+    (1, 1, 2, '2025-02-15', 'contracts/wedding1_venue.pdf'),  (1, 2, 2, '2025-03-20', 'contracts/wedding1_catering.pdf'), (1, 3, 1, NULL, 'contracts/wedding1_photo_pending'), (2, 1, 2, '2025-01-10', 'contracts/wedding2_venue.pdf'), (2, 3, 2, '2025-01-10', 'contracts/wedding2_photo.pdf');       
+
+
+
+INSERT INTO contract_service (contract_id, service_id) VALUES
+    (1, 3), (2, 4), (3, 5), (4, 3), (5, 5);  
+
+##Decisions 
+
+INSERT INTO decision_log (wedding_id, client_id, employee_id, log_date, summary, approved_by) VALUES
+    (1, 1, 1, '2025-02-10 10:30:00', 'Client confirmed full-service package and initial budget range.',            'Anna Klein'), (1, 1, 1, '2025-03-05 15:00:00', 'Client approved The Grand Pavilion as venue after walkthrough.',            'Anna Klein'), (1, 1, 1, '2025-04-15 12:00:00', 'Client selected Menu B from Blue Ridge Catering after tasting.',           'Anna Klein'), (2, 3, 1, '2025-02-01 09:30:00', 'Month-of onboarding completed. Existing vendor list reviewed and logged.', 'Maria Chavez');
+
