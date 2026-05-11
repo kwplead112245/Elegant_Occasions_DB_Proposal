@@ -1,0 +1,228 @@
+## create database
+
+DROP DATABASE IF EXISTS wedding_ops;
+CREATE DATABASE wedding_ops;
+
+## select database 
+
+USE wedding_ops; 
+
+## create tables 
+
+CREATE TABLE contract_status (
+    contract_status_id INT NOT NULL AUTO_INCREMENT,
+    name ENUM('Pending', 'Signed', 'Cancelled') NOT NULL,
+    PRIMARY KEY (contract_status_id)
+);
+
+CREATE TABLE appointment_status (
+    appointment_status_id INT NOT NULL AUTO_INCREMENT,
+    name ENUM('Scheduled', 'Completed', 'Cancelled') NOT NULL,
+    PRIMARY KEY (appointment_status_id)
+);
+
+CREATE TABLE client_type (
+    client_type_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (client_type_id)
+);
+
+CREATE TABLE vendor_type (
+    vendor_type_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(50) NOT NULL,
+    PRIMARY KEY (vendor_type_id)
+);
+
+CREATE TABLE client (
+    client_id INT NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone CHAR(10) NOT NULL,
+    client_type_id INT NOT NULL,
+    PRIMARY KEY (client_id),
+    CONSTRAINT fk_client_client_type
+        FOREIGN KEY (client_type_id) REFERENCES client_type (client_type_id)
+);
+
+CREATE TABLE vendor (
+    vendor_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    email VARCHAR(100),
+    phone CHAR(10),
+    address VARCHAR(255),
+    vendor_type_id INT NOT NULL,
+    PRIMARY KEY (vendor_id),
+    CONSTRAINT fk_vendor_vendor_type
+        FOREIGN KEY (vendor_type_id) REFERENCES vendor_type (vendor_type_id)
+);
+
+CREATE TABLE venue (
+    venue_id INT NOT NULL AUTO_INCREMENT,
+    vendor_id INT NOT NULL,
+    capacity INT NOT NULL,
+    indoor_outdoor VARCHAR(20),
+    PRIMARY KEY (venue_id),
+    CONSTRAINT fk_venue_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendor (vendor_id)
+);
+
+CREATE TABLE service (
+    service_id INT NOT NULL AUTO_INCREMENT,
+    name VARCHAR(100) NOT NULL,
+    description VARCHAR(255),
+    PRIMARY KEY (service_id)
+);
+
+CREATE TABLE employee (
+    employee_id INT NOT NULL AUTO_INCREMENT,
+    first_name VARCHAR(50) NOT NULL,
+    last_name VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    phone CHAR(10) NOT NULL,
+    role VARCHAR(100),
+    PRIMARY KEY (employee_id)
+);
+
+CREATE TABLE wedding (
+    wedding_id INT NOT NULL AUTO_INCREMENT,
+    wedding_date DATE NOT NULL,
+    guest_count INT NOT NULL,
+    theme VARCHAR(100),
+    service_tier ENUM('Full-Service', 'Month-of', 'Hybrid') NOT NULL,
+    venue_id INT,
+    PRIMARY KEY (wedding_id),
+    CONSTRAINT fk_wedding_venue
+        FOREIGN KEY (venue_id) REFERENCES venue (venue_id)
+);
+
+CREATE TABLE client_wedding (
+    client_wedding_id INT NOT NULL AUTO_INCREMENT,
+    wedding_id INT NOT NULL,
+    client_id INT NOT NULL,
+    client_type_id INT NOT NULL,
+    PRIMARY KEY (client_wedding_id),
+    CONSTRAINT fk_cw_wedding
+        FOREIGN KEY (wedding_id) REFERENCES wedding (wedding_id),
+    CONSTRAINT fk_cw_client
+        FOREIGN KEY (client_id) REFERENCES client (client_id),
+    CONSTRAINT fk_cw_client_type
+        FOREIGN KEY (client_type_id) REFERENCES client_type (client_type_id)
+);
+
+CREATE TABLE vendor_service (
+    vendor_service_id INT NOT NULL AUTO_INCREMENT,
+    vendor_id INT NOT NULL,
+    service_id INT NOT NULL,
+    PRIMARY KEY (vendor_service_id),
+    CONSTRAINT fk_vs_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendor (vendor_id),
+    CONSTRAINT fk_vs_service
+        FOREIGN KEY (service_id) REFERENCES service (service_id)
+);
+
+CREATE TABLE employee_service (
+    employee_service_id INT NOT NULL AUTO_INCREMENT,
+    employee_id INT NOT NULL,
+    service_id INT NOT NULL,
+    PRIMARY KEY (employee_service_id),
+    CONSTRAINT fk_es_employee
+        FOREIGN KEY (employee_id) REFERENCES employee (employee_id),
+    CONSTRAINT fk_es_service
+        FOREIGN KEY (service_id) REFERENCES service (service_id)
+);
+
+CREATE TABLE wedding_service (
+    wedding_service_id INT NOT NULL AUTO_INCREMENT,
+    wedding_id INT NOT NULL,
+    service_id INT NOT NULL,
+    service_status ENUM('Exploring', 'Confirmed', 'Cancelled') NOT NULL DEFAULT 'Exploring',
+    added_date DATE NOT NULL,
+    PRIMARY KEY (wedding_service_id),
+    CONSTRAINT fk_ws_wedding
+        FOREIGN KEY (wedding_id) REFERENCES wedding (wedding_id),
+    CONSTRAINT fk_ws_service
+        FOREIGN KEY (service_id) REFERENCES service (service_id)
+);
+
+CREATE TABLE appointment (
+    appointment_id INT NOT NULL AUTO_INCREMENT,
+    client_id INT NOT NULL,
+    appointment_date DATETIME NOT NULL,
+    location VARCHAR(255),
+    appointment_status_id INT NOT NULL,
+    notes TEXT,
+    PRIMARY KEY (appointment_id),
+    CONSTRAINT fk_appt_client
+        FOREIGN KEY (client_id) REFERENCES client (client_id),
+    CONSTRAINT fk_appt_status
+        FOREIGN KEY (appointment_status_id) REFERENCES appointment_status (appointment_status_id)
+);
+
+CREATE TABLE appointment_employee (
+    appointment_employee_id INT NOT NULL AUTO_INCREMENT,
+    appointment_id INT NOT NULL,
+    employee_id INT NOT NULL,
+    PRIMARY KEY (appointment_employee_id),
+    CONSTRAINT fk_ae_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointment (appointment_id),
+    CONSTRAINT fk_ae_employee
+        FOREIGN KEY (employee_id) REFERENCES employee (employee_id)
+);
+
+CREATE TABLE appointment_service (
+    appointment_service_id INT NOT NULL AUTO_INCREMENT,
+    appointment_id INT NOT NULL,
+    service_id INT NOT NULL,
+    PRIMARY KEY (appointment_service_id),
+    CONSTRAINT fk_as_appointment
+        FOREIGN KEY (appointment_id) REFERENCES appointment (appointment_id),
+    CONSTRAINT fk_as_service
+        FOREIGN KEY (service_id) REFERENCES service (service_id)
+);
+
+
+CREATE TABLE contract (
+    contract_id INT NOT NULL AUTO_INCREMENT,
+    wedding_id INT NOT NULL,
+    vendor_id INT NOT NULL,
+    contract_status_id INT NOT NULL,
+    signed_date DATE,
+    document_ref VARCHAR(255),
+    PRIMARY KEY (contract_id),
+    CONSTRAINT fk_contract_wedding
+        FOREIGN KEY (wedding_id) REFERENCES wedding (wedding_id),
+    CONSTRAINT fk_contract_vendor
+        FOREIGN KEY (vendor_id) REFERENCES vendor (vendor_id),
+    CONSTRAINT fk_contract_status
+        FOREIGN KEY (contract_status_id) REFERENCES contract_status (contract_status_id)
+);
+
+CREATE TABLE contract_service (
+    contract_service_id INT NOT NULL AUTO_INCREMENT,
+    contract_id INT NOT NULL,
+    service_id INT NOT NULL,
+    PRIMARY KEY (contract_service_id),
+    CONSTRAINT fk_cs_contract
+        FOREIGN KEY (contract_id) REFERENCES contract (contract_id),
+    CONSTRAINT fk_cs_service
+        FOREIGN KEY (service_id) REFERENCES service (service_id)
+);
+
+
+CREATE TABLE decision_log (
+    decision_log_id INT NOT NULL AUTO_INCREMENT,
+    wedding_id INT NOT NULL,
+    client_id INT,
+    employee_id INT,
+    log_date DATETIME NOT NULL DEFAULT NOW(),
+    summary VARCHAR(255) NOT NULL,
+    approved_by VARCHAR(100),
+    PRIMARY KEY (decision_log_id),
+    CONSTRAINT fk_dl_wedding
+        FOREIGN KEY (wedding_id) REFERENCES wedding (wedding_id),
+    CONSTRAINT fk_dl_client
+        FOREIGN KEY (client_id) REFERENCES client (client_id),
+    CONSTRAINT fk_dl_employee
+        FOREIGN KEY (employee_id) REFERENCES employee (employee_id)
+);
