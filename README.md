@@ -1,4 +1,4 @@
-# Elegant_Occasions_DB_Proposal
+# Elegant_Occasions_DB_Proposal_READ_ME
 
 <div align="center">
   <img src="https://img.shields.io/badge/Database-MySQL%208.4-blue?style=for-the-badge&logo=mysql" alt="MySQL Badge">
